@@ -6,7 +6,7 @@
 /*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:12:53 by athi              #+#    #+#             */
-/*   Updated: 2024/09/04 18:00:20 by athi             ###   ########.fr       */
+/*   Updated: 2024/09/04 18:08:14 by athi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	ft_get_line(t_static_v *s_v, int fd)
 
 	if (!s_v->link)
 		ft_read_file(s_v, fd);
-	if (s_v->last_link->buffer == -1)
+	if (s_v->last_link->buffer == (size_t) -1)
 		return ;
 	tmp_link = s_v->link;
 	s_v->buffer = (size_t) NULL;

@@ -6,7 +6,7 @@
 /*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:12:21 by athi              #+#    #+#             */
-/*   Updated: 2024/09/04 18:01:23 by athi             ###   ########.fr       */
+/*   Updated: 2024/09/04 18:07:42 by athi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*get_next_line(int fd)
 		static_v->offset = (size_t) NULL;
 	}
 	ft_get_line(static_v, fd);
-	if (!static_v->buffer || static_v->link->buffer == -1)
+	if (!static_v->buffer || static_v->link->buffer == (size_t) -1)
 	{
 		free(static_v->link);
 		static_v->stop = True;
