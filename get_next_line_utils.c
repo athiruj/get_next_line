@@ -3,117 +3,117 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/02 11:12:53 by athi              #+#    #+#             */
-/*   Updated: 2024/09/09 11:20:05 by athi             ###   ########.fr       */
+/*   Created: 2024/09/17 17:13:03 by atkaewse          #+#    #+#             */
+/*   Updated: 2024/09/19 15:20:25 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/*
-	read file with a buffer size
-		first line link_list is null
-			allocate link with a sizeof [t_link]
-			set null default
-			set last_link as link
-		if static_v is not null and file for read is not end
-			allocate for a next link with size0f [t_link]
-			set the last to the next link
-			and set null default for new allocate
-		else (at the end or something error)
-			stop and return nothing
-		read file store at the last_link (first time last_link same head_link)
-		check if read at the end set eof is True
-*/
-void	ft_read_file(t_static_v *s_v, int fd)
+void	initial_gnl(t_gnl *gnl, int fd)
 {
-	if (!s_v->link)
+	gnl->head = NULL;
+	gnl->last = NULL;
+	gnl->fd = fd;
+	gnl->stop = 0;
+	gnl->eof = 0;
+	gnl->buff = 0;
+	gnl->offset = 0;
+}
+
+void	read_file(t_gnl *gnl)
+{
+	if (!gnl->head)
 	{
-		s_v->link = (t_link *)malloc(sizeof(t_link));
-		if (!s_v->link)
+		gnl->head = malloc(sizeof(t_link));
+		if (!gnl->head)
 			return ;
-		s_v->link->next = NULL;
-		s_v->link->buffer = 0;
-		s_v->last_link = s_v->link;
+		gnl->last = gnl->head;
+		gnl->last->buff = 0;
+		gnl->last->next = NULL;
 	}
-	else if (s_v->eof == 0)
+	else if (!gnl->eof)
 	{
-		s_v->last_link->next = (t_link *)malloc(sizeof(t_link));
-		if (!s_v->last_link->next)
+		gnl->last->next = malloc(sizeof(t_link));
+		if (!gnl->last->next)
 			return ;
-		s_v->last_link = s_v->last_link->next;
-		s_v->last_link->next = NULL;
-		s_v->last_link->buffer = 0;
+		gnl->last = gnl->last->next;
+		gnl->last->buff = 0;
+		gnl->last->next = NULL;
 	}
 	else
 		return ;
-	s_v->last_link->buffer = read(fd, s_v->last_link->context, BUFFER_SIZE);
-	if (s_v->last_link->buffer < 0)
-		return ((void)free(s_v->last_link));
-	if (s_v->last_link->buffer < BUFFER_SIZE)
-		s_v->eof = 1;
+	gnl->last->buff = read(gnl->fd, gnl->last->content, BUFFER_SIZE);
+	if (gnl->last->buff <= 0)
+		gnl->eof = 1;
 }
 
-/* 
-	create line link_list
-		first if static_link is null 
-			read_file with buffer_size store at static_v
-		check if read fail be returned
-		set tmp_link same as head_link
-		loop for check read file is enough for the first line with buffer size
-			idx is head_link_buffer plus previous offset mod with BUFFER_SIZE
-			check if idx position more then head_buffer size (mean end)
-			set line size ++
-			check if at the newline should stop
-			if read file not enough 
-			(not found newline when idx equal BUFFER_SIZE)
-				re read again and store at the next link
-				re loop with next link
-*/
-void	ft_get_line(t_static_v *s_v, int fd)
+void	read_next_line(t_gnl *gnl)
 {
-	ssize_t	idx;
-	t_link	*tmp_link;
+	t_link	*tmp;
+	int		i;
 
-	if (!s_v->link)
-		ft_read_file(s_v, fd);
-	if (s_v->last_link->buffer == -1)
+	if (!gnl->head)
+		read_file(gnl);
+	if (gnl->last->buff == -1)
 		return ;
-	tmp_link = s_v->link;
-	s_v->buffer = 0;
-	while (tmp_link->buffer)
+	tmp = gnl->head;
+	gnl->buff = 0;
+	while (tmp->buff)
 	{
-		idx = (s_v->buffer + s_v->offset) % BUFFER_SIZE;
-		if (idx > tmp_link->buffer - 1)
+		i = (gnl->buff + gnl->offset) % BUFFER_SIZE;
+		if (i > tmp->buff - 1)
 			return ;
-		s_v->buffer++;
-		if (tmp_link->context[idx] == '\n')
+		gnl->buff++;
+		if (tmp->content[i] == '\n')
 			return ;
-		if (idx == BUFFER_SIZE - 1)
+		if (i == BUFFER_SIZE - 1)
 		{
-			ft_read_file(s_v, fd);
-			tmp_link = tmp_link->next;
+			read_file(gnl);
+			tmp = tmp->next;
 		}
 	}
 }
 
-void	ft_line_cpy(char *dst, t_static_v *s_v)
+char	*duplicate_line(t_gnl *gnl)
 {
-	ssize_t	idx;
+	t_link	*tmp;
+	char	*next_line;
+	int		i;
+
+	next_line = (char *)malloc(sizeof(char) * (gnl->buff + 1));
+	if (!next_line)
+		return (NULL);
+	i = 0;
+	while (i < gnl->buff)
+	{
+		next_line[i++] = gnl->head->content[gnl->offset++];
+		if ((ssize_t)gnl->offset == gnl->head->buff)
+		{
+			tmp = gnl->head;
+			gnl->head = gnl->head->next;
+			free(tmp);
+			gnl->offset = 0;
+		}
+	}
+	next_line[gnl->buff] = '\0';
+	return (next_line);
+}
+
+void	free_line(t_gnl *gnl)
+{
 	t_link	*tmp;
 
-	idx = 0;
-	while (idx < s_v->buffer)
+	if (!gnl->head)
+		return ;
+	while (gnl->head)
 	{
-		dst[idx++] = s_v->link->context[s_v->offset++];
-		if (s_v->offset == s_v->link->buffer)
-		{
-			tmp = s_v->link;
-			s_v->link = s_v->link->next;
-			free(tmp);
-			s_v->offset = 0;
-		}
+		tmp = gnl->head->next;
+		free(gnl->head);
+		gnl->head = tmp;
 	}
+	if (gnl->head)
+		free(gnl->head);
 }
