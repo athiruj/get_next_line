@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:19 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/19 15:20:17 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/19 15:29:09 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_gnl
 	ssize_t			buff;
 	size_t			offset;
 }	t_gnl;
-
 
 /* Main Function Get_next_line */
 char	*get_next_line(int fd);

@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:11 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/19 15:19:26 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/19 15:28:50 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,3 @@ char	*get_next_line(int fd)
 	}
 	return (next_line);
 }
-
