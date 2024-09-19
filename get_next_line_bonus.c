@@ -6,7 +6,7 @@
 /*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:12:21 by athi              #+#    #+#             */
-/*   Updated: 2024/09/04 18:33:23 by athi             ###   ########.fr       */
+/*   Updated: 2024/09/08 14:11:29 by athi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,15 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (!static_v[fd].link)
 	{
-		static_v[fd].eof = False;
-		static_v[fd].offset = (size_t) NULL;
+		static_v[fd].stop = 0;
+		static_v[fd].eof = 0;
+		static_v[fd].offset = 0;
 	}
 	ft_get_line(&static_v[fd], fd);
-	if (!static_v[fd].buffer || static_v[fd].link->buffer == (size_t) -1)
+	if (!static_v[fd].buffer || static_v[fd].link->buffer == -1)
 	{
 		free(static_v[fd].link);
-		static_v[fd].stop = True;
+		static_v[fd].stop = 1;
 		return (NULL);
 	}
 	line = (char *)malloc(static_v[fd].buffer + 1);

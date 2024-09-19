@@ -6,7 +6,7 @@
 /*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:12:53 by athi              #+#    #+#             */
-/*   Updated: 2024/09/04 18:08:14 by athi             ###   ########.fr       */
+/*   Updated: 2024/09/09 11:20:05 by athi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,28 @@ void	ft_read_file(t_static_v *s_v, int fd)
 	if (!s_v->link)
 	{
 		s_v->link = (t_link *)malloc(sizeof(t_link));
+		if (!s_v->link)
+			return ;
 		s_v->link->next = NULL;
-		s_v->link->buffer = (size_t) NULL;
+		s_v->link->buffer = 0;
 		s_v->last_link = s_v->link;
 	}
-	else if (!s_v->eof)
+	else if (s_v->eof == 0)
 	{
 		s_v->last_link->next = (t_link *)malloc(sizeof(t_link));
+		if (!s_v->last_link->next)
+			return ;
 		s_v->last_link = s_v->last_link->next;
 		s_v->last_link->next = NULL;
-		s_v->last_link->buffer = (size_t) NULL;
+		s_v->last_link->buffer = 0;
 	}
 	else
 		return ;
 	s_v->last_link->buffer = read(fd, s_v->last_link->context, BUFFER_SIZE);
-	if (!s_v->last_link->buffer)
-		s_v->eof = True;
+	if (s_v->last_link->buffer < 0)
+		return ((void)free(s_v->last_link));
+	if (s_v->last_link->buffer < BUFFER_SIZE)
+		s_v->eof = 1;
 }
 
 /* 
@@ -68,15 +74,15 @@ void	ft_read_file(t_static_v *s_v, int fd)
 */
 void	ft_get_line(t_static_v *s_v, int fd)
 {
-	size_t	idx;
+	ssize_t	idx;
 	t_link	*tmp_link;
 
 	if (!s_v->link)
 		ft_read_file(s_v, fd);
-	if (s_v->last_link->buffer == (size_t) -1)
+	if (s_v->last_link->buffer == -1)
 		return ;
 	tmp_link = s_v->link;
-	s_v->buffer = (size_t) NULL;
+	s_v->buffer = 0;
 	while (tmp_link->buffer)
 	{
 		idx = (s_v->buffer + s_v->offset) % BUFFER_SIZE;
@@ -95,7 +101,7 @@ void	ft_get_line(t_static_v *s_v, int fd)
 
 void	ft_line_cpy(char *dst, t_static_v *s_v)
 {
-	size_t	idx;
+	ssize_t	idx;
 	t_link	*tmp;
 
 	idx = 0;
@@ -107,8 +113,7 @@ void	ft_line_cpy(char *dst, t_static_v *s_v)
 			tmp = s_v->link;
 			s_v->link = s_v->link->next;
 			free(tmp);
-			s_v->offset = (size_t) NULL;
+			s_v->offset = 0;
 		}
 	}
-	dst[idx] = '\0';
 }

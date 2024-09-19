@@ -6,7 +6,7 @@
 /*   By: athi <athi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:12:21 by athi              #+#    #+#             */
-/*   Updated: 2024/09/04 18:07:42 by athi             ###   ########.fr       */
+/*   Updated: 2024/09/09 13:34:00 by athi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,28 @@
 
 char	*get_next_line(int fd)
 {
-	static t_static_v	static_v[1];
+	static t_static_v	static_v;
 	char				*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0
-		|| (static_v->eof && static_v->stop))
+	if (fd < 0 || BUFFER_SIZE <= 0 || (static_v.eof && static_v.stop))
 		return (NULL);
-	if (!static_v->link)
+	if (!static_v.link)
 	{
-		static_v->eof = False;
-		static_v->offset = (size_t) NULL;
+		static_v.stop = 0;
+		static_v.eof = 0;
+		static_v.offset = 0;
 	}
-	ft_get_line(static_v, fd);
-	if (!static_v->buffer || static_v->link->buffer == (size_t) -1)
+	ft_get_line(&static_v, fd);
+	if (!static_v.buffer || static_v.link->buffer == -1)
 	{
-		free(static_v->link);
-		static_v->stop = True;
+		free(static_v.link);
+		static_v.stop = 1;
 		return (NULL);
 	}
-	line = (char *)malloc(static_v->buffer + 1);
+	line = (char *)malloc(static_v.buffer + 1);
 	if (!line)
 		return (NULL);
-	ft_line_cpy(line, static_v);
+	ft_line_cpy(line, &static_v);
+	line[static_v.buffer] = '\0';
 	return (line);
 }
