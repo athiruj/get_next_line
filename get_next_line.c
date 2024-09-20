@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:11 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/19 15:28:50 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/20 23:49:56 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,14 @@ char	*get_next_line(int fd)
 	if (!gnl->head)
 		initial_gnl(gnl, fd);
 	gnl->buff = 0;
-	read_next_line(gnl);
-	if (gnl->head->buff == -1 || !gnl->buff)
+	if (!read_next_line(gnl))
+		return (NULL);
+	if (gnl->last->buff == -1 || !gnl->buff)
 	{
-		gnl->stop = 1;
-		free_line(gnl);
+		free_all(gnl);
+		initial_gnl(gnl, 0);
 		return (NULL);
 	}
 	next_line = duplicate_line(gnl);
-	if (gnl->head)
-	{
-		if (!gnl->buff)
-			free(gnl->head);
-	}
 	return (next_line);
 }

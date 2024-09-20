@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:19 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/19 15:29:04 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/20 23:52:53 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_gnl
 	struct s_link	*head;
 	struct s_link	*last;
 	int				fd;
-	int				stop;
 	int				eof;
 	ssize_t			buff;
 	size_t			offset;
@@ -51,15 +50,15 @@ char	*get_next_line(int fd);
 void	initial_gnl(t_gnl *gnl, int fd);
 
 /* Use for read the next line in file store in gnl structure */
-void	read_next_line(t_gnl *gnl);
+int		read_next_line(t_gnl *gnl);
 
 /* Use for read file and allocate line */
-void	read_file(t_gnl *gnl);
+int		read_file(t_gnl *gnl);
 
 /* Use for duplicate line get ready for return */
 char	*duplicate_line(t_gnl *gnl);
 
 /* Use for free every link list in gnl structure */
-void	free_line(t_gnl *gnl);
+int		free_all(t_gnl *gnl);
 
 #endif
