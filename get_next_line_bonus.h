@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:19 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/20 23:52:53 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/21 00:19:51 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+
+/*	define boolean statement */
+typedef enum e_bool
+{
+	True = 1,
+	False = 0
+}	t_bool;
 
 /*	define link list structure */
 typedef struct s_link
@@ -50,15 +57,15 @@ char	*get_next_line(int fd);
 void	initial_gnl(t_gnl *gnl, int fd);
 
 /* Use for read the next line in file store in gnl structure */
-int		read_next_line(t_gnl *gnl);
+t_bool	read_next_line(t_gnl *gnl);
 
 /* Use for read file and allocate line */
-int		read_file(t_gnl *gnl);
+t_bool	read_file(t_gnl *gnl);
 
 /* Use for duplicate line get ready for return */
 char	*duplicate_line(t_gnl *gnl);
 
 /* Use for free every link list in gnl structure */
-int		free_all(t_gnl *gnl);
+t_bool	free_all(t_gnl *gnl);
 
 #endif

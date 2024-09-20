@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:03 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/20 23:52:57 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/21 00:25:17 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ void	initial_gnl(t_gnl *gnl, int fd)
 	gnl->offset = 0;
 }
 
-int	read_file(t_gnl *gnl)
+t_bool	read_file(t_gnl *gnl)
 {
 	if (!gnl->head)
 	{
 		gnl->head = (t_link *)malloc(sizeof(t_link));
 		if (!gnl->head)
-			return (0);
+			return (False);
 		gnl->last = gnl->head;
 		gnl->last->buff = 0;
 		gnl->last->next = NULL;
@@ -47,36 +47,36 @@ int	read_file(t_gnl *gnl)
 	gnl->last->buff = read(gnl->fd, gnl->last->content, BUFFER_SIZE);
 	if (gnl->last->buff <= 0)
 		gnl->eof = 1;
-	return (1);
+	return (True);
 }
 
-int	read_next_line(t_gnl *gnl)
+t_bool	read_next_line(t_gnl *gnl)
 {
 	t_link	*tmp;
 	int		i;
 
 	if (!gnl->head)
 		if (!read_file(gnl))
-			return (0);
+			return (False);
 	if (gnl->last->buff == -1)
-		return (1);
+		return (True);
 	tmp = gnl->head;
 	while (tmp->buff)
 	{
 		i = (gnl->buff + gnl->offset) % BUFFER_SIZE;
 		if (i > tmp->buff - 1)
-			return (1);
+			return (True);
 		gnl->buff++;
 		if (tmp->content[i] == '\n')
 			return (1);
 		if (i == BUFFER_SIZE - 1)
 		{
 			if (!read_file(gnl))
-				return (0);
+				return (False);
 			tmp = tmp->next;
 		}
 	}
-	return (1);
+	return (True);
 }
 
 char	*duplicate_line(t_gnl *gnl)
@@ -107,7 +107,7 @@ char	*duplicate_line(t_gnl *gnl)
 	return (next_line);
 }
 
-int	free_all(t_gnl *gnl)
+t_bool	free_all(t_gnl *gnl)
 {
 	t_link	*tmp;
 
@@ -117,5 +117,5 @@ int	free_all(t_gnl *gnl)
 		free(gnl->head);
 		gnl->head = tmp;
 	}
-	return (0);
+	return (False);
 }
