@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:03 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/21 00:25:13 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/09/21 14:19:44 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_bool	read_file(t_gnl *gnl)
 	{
 		gnl->last->next = (t_link *)malloc(sizeof(t_link));
 		if (!gnl->last->next)
-			return (free_all(gnl));
+			return (!free_all(gnl));
 		gnl->last = gnl->last->next;
 		gnl->last->buff = 0;
 		gnl->last->next = NULL;
@@ -50,6 +50,7 @@ t_bool	read_file(t_gnl *gnl)
 	return (True);
 }
 
+// read next line return False when read fail
 t_bool	read_next_line(t_gnl *gnl)
 {
 	t_link	*tmp;
@@ -117,5 +118,6 @@ t_bool	free_all(t_gnl *gnl)
 		free(gnl->head);
 		gnl->head = tmp;
 	}
-	return (False);
+	initial_gnl(gnl, 0);
+	return (True);
 }
