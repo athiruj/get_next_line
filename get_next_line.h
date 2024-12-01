@@ -6,7 +6,7 @@
 /*   By: atkaewse <atkaewse@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 17:13:19 by atkaewse          #+#    #+#             */
-/*   Updated: 2024/09/21 00:19:43 by atkaewse         ###   ########.fr       */
+/*   Updated: 2024/12/01 16:04:07 by atkaewse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,16 @@
 # include <unistd.h>
 
 /*	define boolean statement */
+# ifndef E_BOOL
+#  define E_BOOL
+
 typedef enum e_bool
 {
 	True = 1,
 	False = 0
 }	t_bool;
+
+# endif
 
 /*	define link list structure */
 typedef struct s_link
